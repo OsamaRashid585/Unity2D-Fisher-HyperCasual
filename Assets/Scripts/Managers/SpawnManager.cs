@@ -2,28 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnManger : MonoBehaviour
+public class SpawnManager : MonoBehaviour
 {
+    public GameObject _powerUpClonesParent;
+    public GameObject _enemyAIClonesParent;
     public GameObject[] EnemyPrefab;
     public GameObject PowerUpPrefab;
     public GameObject MeatPrefab;
-    private float MeatPosRX;
-    private float MeatPosRY;
-    private Vector3 Meatpos;
-    private GameObject _powerUpClonesParent;
-    private GameObject _enemyAIClonesParent;
+    private float _meatPosRX;
+    private float _meatPosRY;
+    private Vector3 _meatpos;
+
     private void Start()
     {
-        _powerUpClonesParent = GameObject.FindGameObjectWithTag("PowerUpClones");
-        _enemyAIClonesParent = GameObject.FindGameObjectWithTag("EnemyAIClones");
-        InvokeRepeating("EnemySpawn", 0, 1);
+        InvokeRepeating("EnemySpawn", 0, 0.1f);
         InvokeRepeating("PowerUpSpawn", 0, 0.1f);
         InvokeRepeating("MeatSpawn", 0, 0.1f);
 
     }
     private void EnemySpawn()
     {
-       if(FindObjectsOfType<Enemy>().Length < 30)
+       if(FindObjectsOfType<FishAI>().Length < 30)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -46,19 +45,29 @@ public class SpawnManger : MonoBehaviour
             PowerUPClone.transform.parent = _powerUpClonesParent.transform;
         }
     }
-
     private void MeatSpawn()
     {
-        if(Tooth.IsKill == true)
+        if(PlayerTooth.IsKillByPlayer == true)
         {
             for (int i=0; i<5; i++)
             {
-                MeatPosRY = Random.Range(-8f, 4f);
-                MeatPosRX = Random.Range(-4f, 8f);
-                Meatpos = Tooth._EnemyKillPos + new Vector3(MeatPosRX, MeatPosRY, 0);
-                Instantiate(MeatPrefab, Meatpos, Quaternion.identity);
+                _meatPosRY = Random.Range(-8f, 4f);
+                _meatPosRX = Random.Range(-4f, 8f);
+                _meatpos = PlayerTooth._EnemyKillPos + new Vector3(_meatPosRX, _meatPosRY, 0);
+                Instantiate(MeatPrefab, _meatpos, Quaternion.identity);
             }
-            Tooth.IsKill = false;
+            PlayerTooth.IsKillByPlayer = false;
+        }
+        if (FishAITooth.IsKillByEnemy == true)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                _meatPosRY = Random.Range(-8f, 4f);
+                _meatPosRX = Random.Range(-4f, 8f);
+                _meatpos = FishAITooth.EnemyKillPos + new Vector3(_meatPosRX, _meatPosRY, 0);
+                Instantiate(MeatPrefab, _meatpos, Quaternion.identity);
+            }
+            FishAITooth.IsKillByEnemy = false;
         }
     }
 }

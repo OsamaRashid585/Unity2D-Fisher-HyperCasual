@@ -2,21 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tooth : MonoBehaviour
+public class PlayerTooth : MonoBehaviour
 {
     private float _spwanPosY = 0.6f;
     private int _headCount;
     public static bool _isToothFull = false;
     public static Vector3 _EnemyKillPos;
-    public static bool IsKill = false;
+    public static bool IsKillByPlayer = false;
     
-    
-
-    private void Awake()
-    {
-        
-        
-    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Gray"))
@@ -41,17 +34,18 @@ public class Tooth : MonoBehaviour
     {
        _EnemyKillPos = collision.gameObject.transform.position; 
         Destroy(collision.gameObject);
-        IsKill = true;
-        var head = Instantiate(KillManger.Instance.heads[HeadIndex], transform.parent.position, transform.parent.rotation);
+        IsKillByPlayer = true;
+        var head = Instantiate(UpgradeManager.Instance.Heads[HeadIndex], transform.parent.position, transform.parent.rotation);
         head.transform.parent = transform.parent;
         head.transform.localPosition = new Vector3(head.transform.localPosition.x, head.transform.localPosition.y + _spwanPosY, head.transform.localPosition.z);
         _spwanPosY += 0.6f;
-        UiManager._playerKillScore++;
+        UIManager._playerKillScore++;
         _headCount++;
         
         if (_headCount == 6)
         {
             _isToothFull = true;
+            _spwanPosY = 0.6f;
         }
     }
 }

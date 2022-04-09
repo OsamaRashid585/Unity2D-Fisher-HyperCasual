@@ -5,48 +5,33 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Rigidbody2D PlayerRb2d;
-
     private float _playerMaxTurnSpeed = 0.25f;
     private float _playerMoveSpeed = 0.2f;
-
     private float _angle;
     private float _currentRotateVeolcity;
-
     private Vector2 _playerFinalPos;
     private Vector3 _mousePos;
-
     public ParticleSystem _bubbleEffect;
-
-    public static float _speedBoostValue = 3;
+    public static float _speedBoostValue = 2;
     private float _waitForMeatDestory = 0.5f;
-    private ParticleSystem EnemyBloodSplash;
+    private ParticleSystem BloodSplash;
     private AudioSource killsound;
     private RipplePostProcessor ripplecam;
 
     void Start()
     {
         PlayerRb2d = gameObject.GetComponent<Rigidbody2D>();
-        EnemyBloodSplash = GameObject.FindGameObjectWithTag("BloodSplash").GetComponent<ParticleSystem>();
+        BloodSplash = GameObject.FindGameObjectWithTag("BloodSplash").GetComponent<ParticleSystem>();
         killsound = Camera.main.GetComponent<AudioSource>();
         ripplecam = Camera.main.GetComponent<RipplePostProcessor>();
     }
-
     void Update()
     {
         Following_Mouse_Position();
-        Player_Stoping_Boundreys();
         BoostSpeed();
         UpgradeTooth();
-
-        if(Tooth.IsKill == true)
-        {
-            ripplecam.RippleEffect();
-            EnemyBloodSplash.Play();
-            killsound.Play();
-            EnemyBloodSplash.transform.position = Tooth._EnemyKillPos;
-        }
+        OnKilled();
     }
-
     private void FixedUpdate()
     {
         PlayerRb2d.MovePosition(_playerFinalPos);
@@ -64,12 +49,6 @@ public class Player : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, _angle);
 
     }
-
-    private void Player_Stoping_Boundreys()
-    {
-        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -136.44f, 136.44f),Mathf.Clamp(transform.position.y, -77.7f, 77.7f));
-    }
-
     private void BoostSpeed()
     {
         if (Input.GetMouseButton(0) && _speedBoostValue >= 0)
@@ -85,13 +64,12 @@ public class Player : MonoBehaviour
 
         }
     }
-
     private void UpgradeTooth()
     {
-        if(Tooth._isToothFull == true)
+        if(PlayerTooth._isToothFull == true)
         {
-            Tooth._isToothFull = false;
-            var tooth = Instantiate(KillManger.Instance.Tooths[0], transform.position, transform.rotation);
+            PlayerTooth._isToothFull = false;
+            var tooth = Instantiate(UpgradeManager.Instance.Tooths[0], transform.position, transform.rotation);
             tooth.transform.parent = transform;
             tooth.transform.localPosition = new Vector3(tooth.transform.localPosition.x, tooth.transform.localPosition.y + 2.7f, tooth.transform.localPosition.z);
             for (int i = 0; i < transform.childCount; i++)
@@ -104,16 +82,17 @@ public class Player : MonoBehaviour
             }
         }
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnKilled()
     {
-        if (collision.gameObject.CompareTag("Powerup"))
+        if (PlayerTooth.IsKillByPlayer == true)
         {
-            Destroy(collision.gameObject);
-            _speedBoostValue += 0.1f;
-
+            ripplecam.RippleEffect();
+            BloodSplash.Play();
+            killsound.Play();
+            BloodSplash.transform.position = PlayerTooth._EnemyKillPos;
         }
     }
+
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Meat"))
@@ -125,6 +104,12 @@ public class Player : MonoBehaviour
                 Destroy(collision.gameObject);
                 _waitForMeatDestory = 0.5f;
             }
+        }
+        if (collision.gameObject.CompareTag("Powerup"))
+        {
+            Destroy(collision.gameObject);
+            _speedBoostValue += 0.2f;
+
         }
     }
 }

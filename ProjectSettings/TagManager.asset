@@ -21,6 +21,7 @@ TagManager:
   - BloodSplash
   - PowerUpClones
   - EnemyAIClones
+  - Tale
   layers:
   - Default
   - TransparentFX

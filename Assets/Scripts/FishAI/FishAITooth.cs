@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ToothEnemy : MonoBehaviour
+public class FishAITooth : MonoBehaviour
 {
     private float _spwanPosY = 0.6f;
     private int _headCount;
-    public static bool _isToothFull = false;
+    public static bool IsToothFull = false;
+    public static bool IsKillByEnemy = false;
+    public static Vector3 EnemyKillPos;
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -28,23 +31,50 @@ public class ToothEnemy : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Player"))
         {
-            OnKill(collision, 0);
+            OnKill(collision, 4);
         }
     }
 
     private void OnKill(Collider2D collision, int HeadIndex)
     {
+        switch (gameObject.name)
+        {
+            case "GrayFishAITooth":
+                UIManager.GrayFishAIScore++;
+                break;
+            case "DarkGreenFishAITooth":
+                UIManager.DarkGreenFishAIScore++;
+                break;
+            case "YellowFishAITooth":
+                UIManager.YellowFishAIScore++;
+                break;
+            case "GreenFishAITooth":
+                UIManager.GreenFishAIScore++;
+                break;
+        }
         Destroy(collision.gameObject);
 
-        var head = Instantiate(KillManger.Instance.heads[HeadIndex], transform.parent.position, transform.parent.rotation);
+        var head = Instantiate(UpgradeManager.Instance.Heads[HeadIndex], transform.parent.position, transform.parent.rotation);
         head.transform.parent = transform.parent;
         head.transform.localPosition = new Vector3(head.transform.localPosition.x, head.transform.localPosition.y + _spwanPosY, head.transform.localPosition.z);
         _spwanPosY += 0.6f;
         _headCount++;
 
+        //meat
+        EnemyKillPos = collision.gameObject.transform.position;
+        IsKillByEnemy = true;
+
         if (_headCount == 4)
         {
-            _isToothFull = true;
+            IsToothFull = true;
+            _spwanPosY = 0.6f;
+
+        }
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            GameManager.IsGameOver = true;
         }
     }
+
+    
 }
