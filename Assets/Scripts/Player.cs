@@ -19,12 +19,16 @@ public class Player : MonoBehaviour
 
     public static float _speedBoostValue = 3;
     private float _waitForMeatDestory = 0.5f;
-
+    private ParticleSystem EnemyBloodSplash;
+    private AudioSource killsound;
+    private RipplePostProcessor ripplecam;
 
     void Start()
     {
         PlayerRb2d = gameObject.GetComponent<Rigidbody2D>();
-        
+        EnemyBloodSplash = GameObject.FindGameObjectWithTag("BloodSplash").GetComponent<ParticleSystem>();
+        killsound = Camera.main.GetComponent<AudioSource>();
+        ripplecam = Camera.main.GetComponent<RipplePostProcessor>();
     }
 
     void Update()
@@ -33,6 +37,14 @@ public class Player : MonoBehaviour
         Player_Stoping_Boundreys();
         BoostSpeed();
         UpgradeTooth();
+
+        if(Tooth.IsKill == true)
+        {
+            ripplecam.RippleEffect();
+            EnemyBloodSplash.Play();
+            killsound.Play();
+            EnemyBloodSplash.transform.position = Tooth._EnemyKillPos;
+        }
     }
 
     private void FixedUpdate()

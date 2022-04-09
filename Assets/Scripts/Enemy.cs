@@ -71,8 +71,7 @@ public class Enemy : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Border"))
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0,0,180), 0.5f);
-            Debug.Log("borfer");
+            transform.Rotate(0, 0, 180);
 
         }
     }

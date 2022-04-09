@@ -14,7 +14,7 @@ public class EnemyAlert : MonoBehaviour
             direction.Normalize();
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var target = Quaternion.Euler(Vector3.forward * (angle + offset));
-            parent.rotation = Quaternion.Slerp(parent.rotation, target, 0.07f);
+            parent.rotation = Quaternion.Slerp(parent.rotation, target, 0.05f);
         }
 
         

@@ -18,6 +18,9 @@ TagManager:
   - Green
   - Powerup
   - Meat
+  - BloodSplash
+  - PowerUpClones
+  - EnemyAIClones
   layers:
   - Default
   - TransparentFX
