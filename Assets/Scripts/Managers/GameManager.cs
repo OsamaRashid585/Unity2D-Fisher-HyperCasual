@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
 {
     public static bool IsGameOver;
     public GameObject GameOverPopup;
-
     private void Awake()
     {
         IsGameOver = false;
@@ -18,7 +17,7 @@ public class GameManager : MonoBehaviour
     {
         if (IsGameOver)
         {
-            Time.timeScale = 0f;
+            Time.timeScale = 0;
             GameOverPopup.SetActive(true);
         }
     }

@@ -4,44 +4,52 @@ using UnityEngine;
 
 public class FishAI : MonoBehaviour
 {
-    private Rigidbody2D enemyRb2d;
-    private float _moveSpeed = 6;
+    private Rigidbody2D _enemyRb2d;
+    private float _moveSpeed = 5;
     private float _rotateSpeed = 1.5f;
-    private float timer = 0;
+    private float _timer = 0;
     private float _randomAngle;
     private float _timeToRotate = 4;
-    public ParticleSystem _bubbleEffect;
+    public ParticleSystem BubbleEffect;
     private float _waitForMeatDestory = 0.5f;
-    private ParticleSystem BloodSplash;
+    private ParticleSystem _bloodSplash;
+    public static bool IsAttackMode = false;
 
     void Start()
     {
-        enemyRb2d = GetComponent<Rigidbody2D>();
-        BloodSplash = GameObject.FindGameObjectWithTag("BloodSplash").GetComponent<ParticleSystem>();
+        _enemyRb2d = GetComponent<Rigidbody2D>();
+        _bloodSplash = GameObject.FindGameObjectWithTag("BloodSplash").GetComponent<ParticleSystem>();
 
     }
     private void Update()
     {
         UpgradeToothAI();
         OnKilled();
-    }
-    private void FixedUpdate()
-    {
-       MoveForwardAI();
-       RotateRandomAI();
+        MoveForwardAI();
+        RotateRandomAI();
     }
     private void MoveForwardAI()
     {
-        enemyRb2d.velocity = transform.up * _moveSpeed;
+        if (IsAttackMode)
+        {
+            _moveSpeed = 11f;
+            BubbleEffect.enableEmission = true;
+        }
+        else
+        {
+            _moveSpeed = 5;
+            BubbleEffect.enableEmission = false;
 
+        }
+        _enemyRb2d.velocity = transform.up * _moveSpeed;
     }
     private void RotateRandomAI()
     {
-        timer += Time.deltaTime;
-        if (timer >= _timeToRotate)
+        _timer += Time.deltaTime;
+        if (_timer >= _timeToRotate)
         {
             _randomAngle = Random.Range(0, 360f);
-            timer = 0;
+            _timer = 0;
         }
 
         var targetRotation = Quaternion.Euler(0, 0, _randomAngle);
@@ -64,15 +72,15 @@ public class FishAI : MonoBehaviour
 
             }
         }
-    } //i
+    } 
     private void OnKilled()
     {
         if (FishAITooth.IsKillByEnemy == true)
         {
-            BloodSplash.Play();
-            BloodSplash.transform.position = FishAITooth.EnemyKillPos;
+            _bloodSplash.Play();
+            _bloodSplash.transform.position = FishAITooth.EnemyKillPos;
         }
-    } //i
+    }
     private void AvoidBorders(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
@@ -93,7 +101,7 @@ public class FishAI : MonoBehaviour
                 _waitForMeatDestory = 0.5f;
             }
         }
-    } //i
+    } 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         AvoidBorders(collision);

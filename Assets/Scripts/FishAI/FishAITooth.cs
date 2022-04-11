@@ -37,44 +37,62 @@ public class FishAITooth : MonoBehaviour
 
     private void OnKill(Collider2D collision, int HeadIndex)
     {
-        switch (gameObject.name)
+       if(Player.PlayerMoveSpeed != 0.6f)
         {
-            case "GrayFishAITooth":
-                UIManager.GrayFishAIScore++;
-                break;
-            case "DarkGreenFishAITooth":
-                UIManager.DarkGreenFishAIScore++;
-                break;
-            case "YellowFishAITooth":
-                UIManager.YellowFishAIScore++;
-                break;
-            case "GreenFishAITooth":
-                UIManager.GreenFishAIScore++;
-                break;
-        }
-        Destroy(collision.gameObject);
+            switch (gameObject.name)
+            {
+                case "GrayFishAITooth":
+                    UIManager.GrayFishAIScore++;
+                    break;
+                case "DarkGreenFishAITooth":
+                    UIManager.DarkGreenFishAIScore++;
+                    break;
+                case "YellowFishAITooth":
+                    UIManager.YellowFishAIScore++;
+                    break;
+                case "GreenFishAITooth":
+                    UIManager.GreenFishAIScore++;
+                    break;
+            }
+            if (!collision.gameObject.CompareTag("Player"))
+            {
+                Destroy(collision.gameObject);
+            }
+            var head = Instantiate(UpgradeManager.Instance.Heads[HeadIndex], transform.parent.position, transform.parent.rotation);
+            head.transform.parent = transform.parent;
+            head.transform.localPosition = new Vector3(head.transform.localPosition.x, head.transform.localPosition.y + _spwanPosY, head.transform.localPosition.z);
+            _spwanPosY += 0.6f;
+            _headCount++;
 
-        var head = Instantiate(UpgradeManager.Instance.Heads[HeadIndex], transform.parent.position, transform.parent.rotation);
-        head.transform.parent = transform.parent;
-        head.transform.localPosition = new Vector3(head.transform.localPosition.x, head.transform.localPosition.y + _spwanPosY, head.transform.localPosition.z);
-        _spwanPosY += 0.6f;
-        _headCount++;
+            //meat
+            EnemyKillPos = collision.gameObject.transform.position;
+            IsKillByEnemy = true;
 
-        //meat
-        EnemyKillPos = collision.gameObject.transform.position;
-        IsKillByEnemy = true;
+            if (_headCount == 4)
+            {
+                IsToothFull = true;
+                _spwanPosY = 0.6f;
 
-        if (_headCount == 4)
-        {
-            IsToothFull = true;
-            _spwanPosY = 0.6f;
-
-        }
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            GameManager.IsGameOver = true;
+            }
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                UIManager.Health--;
+                collision.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                if(UIManager.Health == 0)
+                {
+                    Destroy(collision.gameObject);
+                    GameManager.IsGameOver = true;
+                }
+            }
         }
     }
 
-    
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+    }
+
 }

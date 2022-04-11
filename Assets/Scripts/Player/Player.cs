@@ -4,26 +4,27 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private Rigidbody2D PlayerRb2d;
+    private Rigidbody2D _playerRb2d;
     private float _playerMaxTurnSpeed = 0.25f;
-    private float _playerMoveSpeed = 0.2f;
+    public static float PlayerMoveSpeed = 0.25f;
     private float _angle;
     private float _currentRotateVeolcity;
     private Vector2 _playerFinalPos;
     private Vector3 _mousePos;
-    public ParticleSystem _bubbleEffect;
-    public static float _speedBoostValue = 2;
+    public ParticleSystem BubbleEffect;
+    public static float SpeedBoostValue = 2;
     private float _waitForMeatDestory = 0.5f;
-    private ParticleSystem BloodSplash;
-    private AudioSource killsound;
-    private RipplePostProcessor ripplecam;
+    private ParticleSystem _bloodSplash;
+    private AudioSource _killsound;
+    private RipplePostProcessor _ripplecam;
+    public GameObject BubbleSheald;
 
     void Start()
     {
-        PlayerRb2d = gameObject.GetComponent<Rigidbody2D>();
-        BloodSplash = GameObject.FindGameObjectWithTag("BloodSplash").GetComponent<ParticleSystem>();
-        killsound = Camera.main.GetComponent<AudioSource>();
-        ripplecam = Camera.main.GetComponent<RipplePostProcessor>();
+        _playerRb2d = gameObject.GetComponent<Rigidbody2D>();
+        _bloodSplash = GameObject.FindGameObjectWithTag("BloodSplash").GetComponent<ParticleSystem>();
+        _killsound = Camera.main.GetComponent<AudioSource>();
+        _ripplecam = Camera.main.GetComponent<RipplePostProcessor>();
     }
     void Update()
     {
@@ -34,13 +35,13 @@ public class Player : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        PlayerRb2d.MovePosition(_playerFinalPos);
+        _playerRb2d.MovePosition(_playerFinalPos);
     }
     private void Following_Mouse_Position()
     {
         // follow Position
         _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        _playerFinalPos = Vector2.MoveTowards(transform.position, _mousePos, _playerMoveSpeed);
+        _playerFinalPos = Vector2.MoveTowards(transform.position, _mousePos, PlayerMoveSpeed);
 
         //follow rotaion
         Vector2 direction = _mousePos - transform.position;
@@ -51,24 +52,26 @@ public class Player : MonoBehaviour
     }
     private void BoostSpeed()
     {
-        if (Input.GetMouseButton(0) && _speedBoostValue >= 0)
+        if (Input.GetMouseButton(0) && SpeedBoostValue >= 0)
         {
-            _playerMoveSpeed = 0.7f;
-            _bubbleEffect.enableEmission = true;
-            _speedBoostValue -= Time.deltaTime;
+            PlayerMoveSpeed = 0.6f;
+            BubbleEffect.enableEmission = true;
+            SpeedBoostValue -= Time.deltaTime;
+            BubbleSheald.SetActive(true);
         }
         else
         {
-            _playerMoveSpeed = 0.2f;
-            _bubbleEffect.enableEmission = false;
+            PlayerMoveSpeed = 0.25f;
+            BubbleEffect.enableEmission = false;
+            BubbleSheald.SetActive(false);
 
         }
     }
     private void UpgradeTooth()
     {
-        if(PlayerTooth._isToothFull == true)
+        if(PlayerTooth.IsToothFull == true)
         {
-            PlayerTooth._isToothFull = false;
+            PlayerTooth.IsToothFull = false;
             var tooth = Instantiate(UpgradeManager.Instance.Tooths[0], transform.position, transform.rotation);
             tooth.transform.parent = transform;
             tooth.transform.localPosition = new Vector3(tooth.transform.localPosition.x, tooth.transform.localPosition.y + 2.7f, tooth.transform.localPosition.z);
@@ -86,10 +89,10 @@ public class Player : MonoBehaviour
     {
         if (PlayerTooth.IsKillByPlayer == true)
         {
-            ripplecam.RippleEffect();
-            BloodSplash.Play();
-            killsound.Play();
-            BloodSplash.transform.position = PlayerTooth._EnemyKillPos;
+            _ripplecam.RippleEffect();
+            _bloodSplash.Play();
+            _killsound.Play();
+            _bloodSplash.transform.position = PlayerTooth.EnemyKillPos;
         }
     }
 
@@ -103,12 +106,13 @@ public class Player : MonoBehaviour
             {
                 Destroy(collision.gameObject);
                 _waitForMeatDestory = 0.5f;
+                SpeedBoostValue += 0.2f;
             }
         }
         if (collision.gameObject.CompareTag("Powerup"))
         {
             Destroy(collision.gameObject);
-            _speedBoostValue += 0.2f;
+            SpeedBoostValue += 0.1f;
 
         }
     }

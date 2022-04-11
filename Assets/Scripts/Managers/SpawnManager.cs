@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject _powerUpClonesParent;
-    public GameObject _enemyAIClonesParent;
+    public GameObject PowerUpClonesParent;
+    public GameObject EnemyAIClonesParent;
     public GameObject[] EnemyPrefab;
     public GameObject PowerUpPrefab;
     public GameObject MeatPrefab;
@@ -30,7 +30,7 @@ public class SpawnManager : MonoBehaviour
                 var posX = Random.Range(-120, 120);
                 var pos = new Vector3(posX, posY, 0);
                 var EnemyAIClone = Instantiate(EnemyPrefab[i], pos, Quaternion.Euler(0,0,posY));
-                EnemyAIClone.transform.parent = _enemyAIClonesParent.transform;
+                EnemyAIClone.transform.parent = EnemyAIClonesParent.transform;
             }
         }
     }
@@ -42,7 +42,7 @@ public class SpawnManager : MonoBehaviour
             var posX = Random.Range(-130, 130);
             var pos = new Vector3(posX, posY, 0);
             var PowerUPClone = Instantiate(PowerUpPrefab, pos, Quaternion.identity);
-            PowerUPClone.transform.parent = _powerUpClonesParent.transform;
+            PowerUPClone.transform.parent = PowerUpClonesParent.transform;
         }
     }
     private void MeatSpawn()
@@ -53,7 +53,7 @@ public class SpawnManager : MonoBehaviour
             {
                 _meatPosRY = Random.Range(-8f, 4f);
                 _meatPosRX = Random.Range(-4f, 8f);
-                _meatpos = PlayerTooth._EnemyKillPos + new Vector3(_meatPosRX, _meatPosRY, 0);
+                _meatpos = PlayerTooth.EnemyKillPos + new Vector3(_meatPosRX, _meatPosRY, 0);
                 Instantiate(MeatPrefab, _meatpos, Quaternion.identity);
             }
             PlayerTooth.IsKillByPlayer = false;

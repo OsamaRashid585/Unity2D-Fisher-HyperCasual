@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1fa67b436a5bc0468a2cff72b9c9d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bubbleEffect: {fileID: 4504146840928759632}
+  BubbleEffect: {fileID: 4504146840928759632}
 --- !u!58 &3052036285240447905
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -408,7 +408,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 2}
   serializedVersion: 2
-  m_Radius: 6.5
+  m_Radius: 12
 --- !u!114 &1548590053373619644
 MonoBehaviour:
   m_ObjectHideFlags: 0

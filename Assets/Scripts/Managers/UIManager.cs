@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     public Slider SpeedBooster;
     public static int _playerKillScore;
     public TextMeshProUGUI _playerKillScoreTXT;
+    public TextMeshProUGUI HealthTXT;
+    public static int Health;
 
     public TextMeshProUGUI _playerKillScoreTXTL;
 
@@ -27,7 +29,7 @@ public class UIManager : MonoBehaviour
 
     //GameOver screen leaderbord
 
-    public TextMeshProUGUI _playerKillScoreTXTEND;
+    public TextMeshProUGUI PlayerKillScoreTXTEND;
     public TextMeshProUGUI YellowFishAIScoreTXTEND;
     public TextMeshProUGUI GreenFishAIScoreTXTEND;
     public TextMeshProUGUI DarkGreenFishAIScoreTXTEND;
@@ -40,11 +42,12 @@ public class UIManager : MonoBehaviour
         GreenFishAIScore = 0;
         DarkGreenFishAIScore = 0;
         GrayFishAIScore = 0;
+        Health = 3;
     }
     void Update()
     {
-        SpeedBooster.value = Player._speedBoostValue;
-
+        SpeedBooster.value = Player.SpeedBoostValue;
+        HealthTXT.text = "Health: " + Health.ToString();
         UpDateOnScreenLeaderBoard();
         UpDateGameOverLeaderBoard();
     }
@@ -58,13 +61,13 @@ public class UIManager : MonoBehaviour
         YellowFishAIScoreTXT.text = "Yellow            " + YellowFishAIScore.ToString();
         GreenFishAIScoreTXT.text = "Green            " + GreenFishAIScore.ToString();
         DarkGreenFishAIScoreTXT.text = "Dark Green     " + DarkGreenFishAIScore.ToString();
-        GrayFishAIScoreTXT.text = "Gray                 " + GrayFishAIScore.ToString();
+        GrayFishAIScoreTXT.text = "Gray                " + GrayFishAIScore.ToString();
     }
 
     private void UpDateGameOverLeaderBoard()
     {
         //GameOver screen leaderbord
-        _playerKillScoreTXTEND.text = _playerKillScore.ToString();
+        PlayerKillScoreTXTEND.text = _playerKillScore.ToString();
         YellowFishAIScoreTXTEND.text = YellowFishAIScore.ToString();
         GreenFishAIScoreTXTEND.text = GreenFishAIScore.ToString();
         DarkGreenFishAIScoreTXTEND.text = DarkGreenFishAIScore.ToString();

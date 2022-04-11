@@ -6,8 +6,8 @@ public class PlayerTooth : MonoBehaviour
 {
     private float _spwanPosY = 0.6f;
     private int _headCount;
-    public static bool _isToothFull = false;
-    public static Vector3 _EnemyKillPos;
+    public static bool IsToothFull = false;
+    public static Vector3 EnemyKillPos;
     public static bool IsKillByPlayer = false;
     
     private void OnTriggerEnter2D(Collider2D collision)
@@ -32,7 +32,7 @@ public class PlayerTooth : MonoBehaviour
 
     private void OnKill(Collider2D collision,int HeadIndex)
     {
-       _EnemyKillPos = collision.gameObject.transform.position; 
+       EnemyKillPos = collision.gameObject.transform.position; 
         Destroy(collision.gameObject);
         IsKillByPlayer = true;
         var head = Instantiate(UpgradeManager.Instance.Heads[HeadIndex], transform.parent.position, transform.parent.rotation);
@@ -44,7 +44,7 @@ public class PlayerTooth : MonoBehaviour
         
         if (_headCount == 6)
         {
-            _isToothFull = true;
+            IsToothFull = true;
             _spwanPosY = 0.6f;
         }
     }
